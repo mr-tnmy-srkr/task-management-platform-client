@@ -1,14 +1,17 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
-
+import SocialLogin from "../../components/SocialLogin/SocialLogin.jsx";
 
 const Signup = () => {
-  const { createUser,updateUserProfile } = useAuth();
+  const { createUser, updateUserProfile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || "/";
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const toastId = toast.loading("Creating user ...");
 
     //get field value
     const name = e.target.name.value;
@@ -26,14 +29,13 @@ const Signup = () => {
     //creating a new user
     createUser(email, password)
       .then((res) => {
-        updateUserProfile(name,img)
-        .then(()=>{
-          toast.success("user created successfully");
-          navigate('/')
-        })
+        updateUserProfile(name, img).then(() => {
+          navigate(from, { replace: true });
+          toast.success("Signup Successful", { id: toastId });
+        });
       })
       .catch((error) => {
-        toast.error(error.message);
+        toast.error(error.message, { id: toastId });
       });
   };
 
@@ -50,74 +52,72 @@ const Signup = () => {
             </p>
           </div>
           <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-           <div className="card-body">
-           <form onSubmit={handleSubmit} >
-              <div className="form-control">
+            <div className="card-body">
+              <form onSubmit={handleSubmit}>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Full Name</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Full name"
+                    className="input input-bordered"
+                    name="name"
+                    required
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Email</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="email"
+                    className="input input-bordered"
+                    name="email"
+                    required
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Image Url</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="image url"
+                    className="input input-bordered"
+                    name="img"
+                    required
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Password</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="password"
+                    className="input input-bordered"
+                    name="password"
+                    required
+                  />
+                </div>
+                <div className="form-control mt-6 p-0">
+                  <button type="submit" className="btn btn-neutral">
+                    Signup
+                  </button>
+                </div>
                 <label className="label">
-                  <span className="label-text">Full Name</span>
+                  Have an account?
+                  <Link to="/login" className="label-text-alt link link-hover">
+                    Please Login
+                  </Link>
                 </label>
-                <input
-                  type="text"
-                  placeholder="Full name"
-                  className="input input-bordered"
-                  name="name"
-                  required
-                />
+              </form>
+              <div className="">
+                <SocialLogin />
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Email</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="email"
-                  className="input input-bordered"
-                  name="email"
-                  required
-                />
-              </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Image Url</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="image url"
-                  className="input input-bordered"
-                  name="img"
-                  required
-                />
-              </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Password</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="password"
-                  className="input input-bordered"
-                  name="password"
-                  required
-                />
-              </div>
-              <div className="form-control mt-6 p-0">
-                <button type="submit" className="btn btn-neutral">
-                  Signup
-                </button>
-              </div>
-              <label className="label">
-                Have an account?
-                <Link to="/login" className="label-text-alt link link-hover">
-                  Please Login
-                </Link>
-              </label>
-              
-            </form>
-            <div className="">
-             {/* <SocialLogin /> */}
-             </div>
-           </div>
-            
+            </div>
           </div>
         </div>
       </div>
