@@ -9,8 +9,9 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import { auth } from "../firebase/firebaseConfig";
 import PropTypes from "prop-types";
+import { auth } from "../config/firebase.config";
+
 
 export const AuthContext = createContext(null);
 
@@ -77,6 +78,7 @@ const AuthProvider = ({ children }) => {
     logOut,
   };
 
+  console.log(user);
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
