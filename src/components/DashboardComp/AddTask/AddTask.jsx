@@ -1,15 +1,31 @@
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import useAuth from "../../../hooks/useAuth";
 
 const AddTask = () => {
+  const { user } = useAuth();
   const { register, handleSubmit, reset } = useForm();
   const onSubmit = async (data) => {
     console.log(data);
+
+    try {
+      const response = await axios.post("http://localhost:5000/tasks", {
+        title: data.title,
+        task: data.task,
+        category: data.category,
+        deadline: data.deadline,
+        email: user.email,
+      });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <div>
       <h1 className="text-center text-3xl">--Add a Task--</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto ">
         <div className="form-control w-full my-6">
           <label className="label">
             <span className="label-text">Task Title</span>
@@ -65,7 +81,9 @@ const AddTask = () => {
             />
           </div>
         </div>
-        <button className="btn">Add Task</button>
+        <div className="text-center">
+          <button className="btn btn-primary">Add Task</button>
+        </div>
       </form>
     </div>
   );
