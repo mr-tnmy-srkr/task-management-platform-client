@@ -1,47 +1,50 @@
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
-const AddTask = () => {
-  const { user } = useAuth();
+const UpdateTask = () => {
+  const { data } = useLoaderData();
+  // console.log(data);
+  const { id } = useParams();
+  // console.log(id);
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     console.log(data);
 
+    const updatedTasks = {
+      title: data.title,
+      task: data.task,
+      category: data.category,
+      type: data.type,
+      deadline: data.deadline,
+    };
+
     try {
-      const response = await axios.post(
-        "https://task-management-platform-server-sable.vercel.app/add-tasks",
-        {
-          title: data.title,
-          task: data.task,
-          category: data.category,
-          type: data.type,
-          deadline: data.deadline,
-          email: user.email,
-        }
+      const response = await axios.put(
+        `https://task-management-platform-server-sable.vercel.app/update-task/${id}`,
+        updatedTasks
       );
-      if (response.data.insertedId) {
+      if (response.data.modifiedCount) {
         console.log(response);
-        toast.success("Task added successfully");
+        toast.success("Task updated successfully");
         navigate("/dashboard/manage-task");
       }
     } catch (error) {
       console.error(error);
     }
   };
-
   return (
     <div>
-      <h1 className="text-center text-3xl">--Add a Task--</h1>
+      <h1 className="text-center text-3xl">--Update a Task--</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto ">
         <div className="form-control w-full my-6">
           <label className="label">
             <span className="label-text">Task Title</span>
           </label>
           <input
+            defaultValue={data.title}
             type="text"
             placeholder="Task Title"
             {...register("title", { required: true })}
@@ -54,6 +57,7 @@ const AddTask = () => {
             <span className="label-text">Task Details</span>
           </label>
           <textarea
+            defaultValue={data.task}
             {...register("task", { required: true })}
             className="textarea textarea-bordered h-24"
             placeholder="Details"
@@ -67,7 +71,7 @@ const AddTask = () => {
               <span className="label-text">Priority</span>
             </label>
             <select
-              // defaultValue="default"
+              defaultValue={data.category}
               {...register("category", { required: true })}
               className="select select-bordered w-full"
             >
@@ -82,7 +86,7 @@ const AddTask = () => {
               <span className="label-text">Type</span>
             </label>
             <select
-              // defaultValue="default"
+              defaultValue={data.type}
               {...register("type", { required: true })}
               className="select select-bordered w-full"
             >
@@ -97,6 +101,7 @@ const AddTask = () => {
               <span className="label-text">Deadline</span>
             </label>
             <input
+              defaultValue={data.deadline}
               type="date"
               placeholder="deadline"
               min={new Date().toISOString().split("T")[0]}
@@ -106,11 +111,10 @@ const AddTask = () => {
           </div>
         </div>
         <div className="text-center">
-          <button className="btn btn-primary">Add Task</button>
+          <button className="btn btn-primary">Update Task</button>
         </div>
       </form>
     </div>
   );
 };
-
-export default AddTask;
+export default UpdateTask;

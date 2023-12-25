@@ -9,6 +9,8 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute";
 import AddTask from "../components/DashboardComp/AddTask/AddTask";
 import ManageTask from "../components/DashboardComp/ManageTask/ManageTask";
+import UpdateTask from "../components/DashboardComp/UpdateTask/UpdateTask";
+import axios from "axios";
 
 const router = createBrowserRouter([
   {
@@ -43,21 +45,33 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-          path: "add-task",
-          element: (
-            <PrivateRoute>
-              <AddTask />
-            </PrivateRoute>
+        path: "add-task",
+        element: (
+          <PrivateRoute>
+            <AddTask />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "update-task/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateTask />
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          axios(
+            `https://task-management-platform-server-sable.vercel.app/get-task/${params.id}`
           ),
       },
       {
-          path: "manage-task",
-          element: (
-            <PrivateRoute>
-              <ManageTask />
-            </PrivateRoute>
-          ),
-      }
+        path: "manage-task",
+        element: (
+          <PrivateRoute>
+            <ManageTask />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);

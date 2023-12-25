@@ -19,7 +19,7 @@ const Login = () => {
 
     //login user
     userLogin(email, password)
-      .then((res) => {
+      .then(() => {
         navigate(from, { replace: true });
       toast.success("Login Successful", { id: toastId });
       })
